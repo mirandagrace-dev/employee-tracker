@@ -76,34 +76,48 @@ const init = () => {
 		});
 };
 
-viewEmployees = () => {
-	console.log("show employees here");
+const viewEmployees = () => {
+	const employeesQuery = `SELECT 
+        employee.id,
+        CONCAT(employee.first_name, " ", employee.last_name) AS employee,
+        title, name AS department, 
+        CONCAT("$", salary) AS salary,
+        CONCAT(manager.first_name, " ", manager.last_name) AS manager
+        FROM employee
+        INNER JOIN employee manager ON 
+        manager.id = employee.manager_id
+        INNER JOIN role ON 
+        employee.role_id = role.id
+        INNER JOIN department
+        ON role.department_id = department.id
+        ORDER BY employee.id asc;`;
+	connection.query(employeesQuery, (err, data) => {
+		if (err) throw err;
+		console.table(data);
+		init();
+	});
 };
 
-viewEmployeesByDepartment = () => {
-	console.log("show employees here");
-};
-
-viewRoles = () => {
+const viewRoles = () => {
 	console.log("show roles here");
 };
 
-viewDepartments = () => {
+const viewDepartments = () => {
 	console.log("show departments here");
 };
 
-addEmployee = () => {
+const addEmployee = () => {
 	console.log("add employee here");
 };
 
-addRole = () => {
+const addRole = () => {
 	console.log("add role here");
 };
 
-addDepartment = () => {
+const addDepartment = () => {
 	console.log("add department here");
 };
 
-employeeRoleUpdate = () => {
+const employeeRoleUpdate = () => {
 	console.log("update employee roles here");
 };
