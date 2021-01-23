@@ -66,7 +66,6 @@ const init = () => {
 					employeeRoleUpdate();
 					break;
 				case "Exit":
-					exit();
 					break;
 			}
 		});
@@ -221,8 +220,10 @@ const addRole = () => {
 const employeeRoleUpdate = () => {
 	const employeeQuery = `SELECT * FROM employee;`;
 	const roleQuery = `SELECT * FROM role;`;
+	console.log("hi");
 	connection.query(employeeQuery, (err, data) => {
 		if (err) throw err;
+
 		const employeesArray = data.map((employee) => {
 			return {
 				name: `${employee.first_name} ${employee.last_name}`,
@@ -231,7 +232,7 @@ const employeeRoleUpdate = () => {
 		});
 		connection.query(roleQuery, (err, data) => {
 			if (err) throw err;
-			const arrayOfRoles = data.map((role) => {
+			const rolesArray = data.map((role) => {
 				return {
 					name: role.title,
 					value: role.id,
@@ -249,7 +250,7 @@ const employeeRoleUpdate = () => {
 						type: "list",
 						name: "role",
 						message: "What is their new role?",
-						choices: employeesArray,
+						choices: rolesArray,
 					},
 				])
 				.then(({ employees, role }) => {
