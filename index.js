@@ -120,7 +120,56 @@ const viewDepartments = () => {
 };
 
 const addEmployee = () => {
-	console.log("add employee here");
+	connection.query(`SELECT * FROM employee;`, (err, data) => {
+		if (err) throw err;
+		const arrayOfManagers = data.map((employee) => {
+			return {
+				name: `${employee.first_name} ${employee.last_name}`,
+				value: employee.id,
+			};
+		});
+		connection.query(`SELECT * FROM role;`, (err, data) => {
+			if (err) throw err;
+			const rolesArray = data.map((role) => {
+				return { name: role.title, value: role.id };
+			});
+			inquirer
+				.prompt([
+					{
+						type: "input",
+						name: "firstName",
+						message: "first name: ",
+					},
+					{
+						type: "input",
+						name: "lastName",
+						message: "last name: ",
+					},
+					{
+						type: "list",
+						name: "role",
+						message: "role: ",
+						choices: rolesArray,
+					},
+					{
+						type: "list",
+						name: "manager",
+						message: "manager: ",
+						choices: rolesArray,
+					},
+				])
+				.then(({ firstName, lastName, role, manager }) => {
+					connection.query(
+						`INSERT INTO employee (first_name, last_name, role_id, manager_id) VALUES (?, ?, ?, ?);`,
+						[firstName, lastName, role, manager],
+						(err, data) => {
+							if (err) throw err;
+							init();
+						}
+					);
+				});
+		});
+	});
 };
 
 const addRole = () => {
