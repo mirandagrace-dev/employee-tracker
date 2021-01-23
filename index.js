@@ -266,8 +266,42 @@ const employeeRoleUpdate = () => {
 	});
 };
 
-
-
 const addDepartment = () => {
-	console.log("add department here");
+	const departmentQuery = `SELECT * FROM department;`;
+	connection.query(departmentQuery, (err, data) => {
+		if (err) throw err;
+
+		inquirer
+			.prompt([
+				{
+					type: "input",
+					name: "name",
+					message: "What is the name of the department you'd like to add?",
+					validate: (name) => {
+						for (let i = 0; i < data.length; i++) {
+							if (data[i].name === name) {
+								return "Department already exists!";
+							}
+						}
+						return true;
+					},
+				},
+			])
+			.then(({ name }) => {
+				connection.query(departmentQuery, (err, data) => {
+					if (err) throw err;
+
+					connection.query(
+						`INSERT INTO department (name)
+                        VALUES (?);`,
+						[name],
+						(err, data) => {
+							if (err) throw err;
+							viewDepartments();
+							init();
+						}
+					);
+				});
+			});
+	});
 };
