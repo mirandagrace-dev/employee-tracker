@@ -173,7 +173,47 @@ const addEmployee = () => {
 };
 
 const addRole = () => {
-	console.log("add role here");
+	const roleQuery = `SELECT * FROM role;`;
+	const departmentQuery = `SELECT * FROM department;`;
+	connection.query(roleQuery, (err, data) => {
+		if (err) throw err;
+	});
+	connection.query(departmentQuery, (err, data) => {
+		if (err) throw err;
+		const departmentsArray = data.map((department) => {
+			return { name: department.name, value: department.id };
+		});
+		inquirer
+			.prompt([
+				{
+					type: "input",
+					name: "title",
+					message: "What is the title of the role?",
+				},
+				{
+					type: "input",
+					name: "salary",
+					message: "What is the salary of the role?",
+				},
+				{
+					type: "list",
+					name: "department",
+					message: "What department is the role in?",
+					choices: departmentsArray,
+				},
+			])
+			.then(({ title, salary, department }) => {
+				connection.query(
+					`INSERT INTO role (title, salary, department_id)
+                    VALUES (?, ?, ?);`,
+					[title, salary, department],
+					(err) => {
+						if (err) throw err;
+						init();
+					}
+				);
+			});
+	});
 };
 
 const addDepartment = () => {
