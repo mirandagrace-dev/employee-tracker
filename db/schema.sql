@@ -15,16 +15,16 @@ CREATE TABLE employee (
     PRIMARY KEY (id)
 );
 
-CREATE TABLE department (
-    id INTEGER NOT NULL AUTO_INCREMENT,
-    name VARCHAR(30),
-    PRIMARY KEY (id)
-);
-
 CREATE TABLE role (
     id INTEGER NOT NULL AUTO_INCREMENT,
     title VARCHAR(30),
 	salary DECIMAL(10,0),
     department_id INTEGER,
+    PRIMARY KEY (id)
+);
+
+CREATE TABLE department (
+    id INTEGER NOT NULL AUTO_INCREMENT,
+    name VARCHAR(30),
     PRIMARY KEY (id)
 );
