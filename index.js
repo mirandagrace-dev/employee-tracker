@@ -121,7 +121,7 @@ const viewDepartments = () => {
 const addEmployee = () => {
 	connection.query(`SELECT * FROM employee;`, (err, data) => {
 		if (err) throw err;
-		const arrayOfManagers = data.map((employee) => {
+		const managersArray = data.map((employee) => {
 			return {
 				name: `${employee.first_name} ${employee.last_name}`,
 				value: employee.id,
@@ -154,7 +154,7 @@ const addEmployee = () => {
 						type: "list",
 						name: "manager",
 						message: "manager: ",
-						choices: rolesArray,
+						choices: managersArray,
 					},
 				])
 				.then(({ firstName, lastName, role, manager }) => {
