@@ -110,7 +110,13 @@ const viewRoles = () => {
 };
 
 const viewDepartments = () => {
-	console.log("show departments here");
+	const departmentsQuery = `SELECT department.id, name AS department
+        FROM department;`;
+	connection.query(departmentsQuery, (err, data) => {
+		if (err) throw err;
+		console.table(data);
+		init();
+	});
 };
 
 const addEmployee = () => {
