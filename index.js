@@ -32,7 +32,6 @@ const init = () => {
 				message: "What would you like to do?",
 				choices: [
 					"View all employees",
-					"View employees by department",
 					"View roles",
 					"View departments",
 					"Add employee",
@@ -47,9 +46,6 @@ const init = () => {
 			switch (data.action) {
 				case "View all employees":
 					viewEmployees();
-					break;
-				case "View employees by department":
-					viewEmployeesByDepartment();
 					break;
 				case "View roles":
 					viewRoles();
@@ -99,7 +95,18 @@ const viewEmployees = () => {
 };
 
 const viewRoles = () => {
-	console.log("show roles here");
+	const rolesQuery = `SELECT 
+	role.id,
+    title, name AS department, 
+    CONCAT("$", salary) AS salary
+    FROM role
+    LEFT JOIN department ON 
+	department.id = role.department_id;`;
+	connection.query(rolesQuery, (err, data) => {
+		if (err) throw err;
+		console.table(data);
+		init();
+	});
 };
 
 const viewDepartments = () => {
