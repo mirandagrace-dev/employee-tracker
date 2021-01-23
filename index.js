@@ -164,6 +164,7 @@ const addEmployee = () => {
 						[firstName, lastName, role, manager],
 						(err, data) => {
 							if (err) throw err;
+							viewEmployees();
 							init();
 						}
 					);
@@ -209,6 +210,7 @@ const addRole = () => {
 					[title, salary, department],
 					(err) => {
 						if (err) throw err;
+						viewRoles();
 						init();
 					}
 				);
@@ -216,10 +218,56 @@ const addRole = () => {
 	});
 };
 
-const addDepartment = () => {
-	console.log("add department here");
+const employeeRoleUpdate = () => {
+	const employeeQuery = `SELECT * FROM employee;`;
+	const roleQuery = `SELECT * FROM role;`;
+	connection.query(employeeQuery, (err, data) => {
+		if (err) throw err;
+		const employeesArray = data.map((employee) => {
+			return {
+				name: `${employee.first_name} ${employee.last_name}`,
+				value: employee.id,
+			};
+		});
+		connection.query(roleQuery, (err, data) => {
+			if (err) throw err;
+			const arrayOfRoles = data.map((role) => {
+				return {
+					name: role.title,
+					value: role.id,
+				};
+			});
+			inquirer
+				.prompt([
+					{
+						type: "list",
+						name: "employees",
+						message: "Which employee would you like to update?",
+						choices: employeesArray,
+					},
+					{
+						type: "list",
+						name: "role",
+						message: "What is their new role?",
+						choices: employeesArray,
+					},
+				])
+				.then(({ employees, role }) => {
+					const updateQuery = `UPDATE employee
+                    SET role_id = ?
+                    WHERE id = ?;`;
+					connection.query(updateQuery, [role, employees], (err, data) => {
+						if (err) throw err;
+						viewEmployees();
+						init();
+					});
+				});
+		});
+	});
 };
 
-const employeeRoleUpdate = () => {
-	console.log("update employee roles here");
+
+
+const addDepartment = () => {
+	console.log("add department here");
 };
